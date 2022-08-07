@@ -18,11 +18,11 @@ spec:
           - containerPort: 5432
         env:
         - name: POSTGRES_PASSWORD
-          value: "kubenews_password123"
+          value: ${{secrets.POSTGRES_PASSWORD}}
         - name: POSTGRES_USER
-          value: "kubenews_user"
+          value: ${{secrets.POSTGRES_USER}}
         - name: POSTGRES_DB
-          value: "kubenews_database"
+          value: ${{secrets.POSTGRES_DB}}
 ---
 apiVersion: v1
 kind: Service
@@ -59,11 +59,11 @@ spec:
           - containerPort: 5432
         env:
         - name: DB_PASSWORD
-          value: "kubenews_password123"
+          value: ${{secrets.POSTGRES_PASSWORD}}
         - name: DB_USERNAME
-          value: "kubenews_user"
+          value: ${{secrets.POSTGRES_USER}}
         - name: DB_DATABASE
-          value: "kubenews_database"
+          value: ${{secrets.POSTGRES_DB}}
         - name: DB_HOST
           value: "postgre"
 ---
