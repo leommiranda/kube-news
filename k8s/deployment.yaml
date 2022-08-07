@@ -14,11 +14,6 @@ spec:
       containers:
       - name: postgre
         image: postgres:14.3
-        # TODO: comentar na hora de subir pro github
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
         ports:
           - containerPort: 5432
         env:
@@ -60,11 +55,6 @@ spec:
       containers:
       - name: kubenews
         image: leommiranda/kube-news:latest
-        # TODO: comentar limite de recursos na hora de dar commit
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
         ports:
           - containerPort: 5432
         env:
