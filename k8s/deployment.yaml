@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgre
+  # as annotations tem q ficar no pod, nao no deployment. pq o fabricio ja fez essa cagada algumas vezes
 spec:
   selector:
     matchLabels:
@@ -17,12 +18,24 @@ spec:
         ports:
           - containerPort: 5432
         env:
-        - name: POSTGRES_PASSWORD
-          value: "kubenews_password123"
-        - name: POSTGRES_USER
-          value: "kubenews_user"
-        - name: POSTGRES_DB
-          value: "kubenews_database"
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: POSTGRES_PASSWORD
+                optional: false # same as default; "db-secret" must exist and include a key named "username"
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: POSTGRES_USER
+                optional: false
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: POSTGRES_DB
+                optional: false
 ---
 apiVersion: v1
 kind: Service
@@ -44,6 +57,7 @@ kind: Deployment
 metadata:
   name: kubenews
 spec:
+  # replicas: 2
   selector:
     matchLabels:
       app: kubenews
@@ -51,6 +65,10 @@ spec:
     metadata:
       labels:
         app: kubenews
+      # annotations:
+      #   prometheus.io/scrape: "true"
+      #   prometheus.io/port: "8080"
+      #   prometheus.io/path: "/metrics"
     spec:
       containers:
       - name: kubenews
@@ -58,14 +76,26 @@ spec:
         ports:
           - containerPort: 5432
         env:
-        - name: DB_PASSWORD
-          value: "kubenews_password123"
-        - name: DB_USERNAME
-          value: "kubenews_user"
-        - name: DB_DATABASE
-          value: "kubenews_database"
-        - name: DB_HOST
-          value: "postgre"
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: POSTGRES_PASSWORD
+                optional: false # same as default; "db-secret" must exist and include a key named "username"
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: POSTGRES_USER
+                optional: false
+          - name: DB_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: POSTGRES_DB
+                optional: false
+          - name: DB_HOST
+            value: "postgre"
 ---
 apiVersion: v1
 kind: Service

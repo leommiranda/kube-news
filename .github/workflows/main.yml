@@ -54,6 +54,16 @@ jobs:
           # Contents of kubeconfig file
           kubeconfig: ${{secrets.K8S_CONFIG}}
 
+      - name: Cria os secrets
+        uses: azure/k8s-create-secret@v2
+        with:
+          namespace: 'default'
+          secret-type: 'generic'
+          # Name of the secret. You can use this secret name in the Kubernetes YAML configuration file.
+          secret-name: db-secret
+          # JSON object with plaintext string data for secret ex: {"key1":"value1"}
+          string-data:  ${{ secrets.DB_SECRET }}
+
       - name: Faz o deploy do cluster Kubernetes
         uses: Azure/k8s-deploy@v4.3
         with:
