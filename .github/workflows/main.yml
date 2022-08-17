@@ -55,7 +55,7 @@ jobs:
           kubeconfig: ${{secrets.K8S_CONFIG}}
 
       - name: Cria os secrets
-        uses: azure/k8s-create-secret@v2
+        uses: azure/k8s-create-secret@v3.0
         with:
           namespace: 'default'
           secret-type: 'generic'
