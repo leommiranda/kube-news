@@ -1,3 +1,22 @@
+kubectl create secret generic db-secret \
+    --from-literal=POSTGRES_DB="kubenews_database" \
+    --from-literal=POSTGRES_PASSWORD="kubenews_password123" \
+    --from-literal=POSTGRES_USER="kubenews_user" \
+    --kubeconfig=/home/leommiranda/Desktop/iniciativa_kubernetes/kube-news-iac/kube_config.yaml
+
+## instalar ingress controller
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.0/deploy/static/provider/cloud/deploy.yaml --kubeconfig=/home/leommiranda/Desktop/iniciativa_kubernetes/kube-news-iac/kube_config.yaml
+
+kubectl get all -n ingress-nginx --kubeconfig=/home/leommiranda/Desktop/iniciativa_kubernetes/kube-news-iac/kube_config.yaml
+
+
+kubectl apply -f k8s/ingress.yaml --kubeconfig=/home/leommiranda/Desktop/iniciativa_kubernetes/kube-news-iac/kube_config.yaml
+
+kubectl get ingress --kubeconfig=/home/leommiranda/Desktop/iniciativa_kubernetes/kube-news-iac/kube_config.yaml
+
+
+
 ## Setup local
 
 O repositório está todo configurado com o CI/CD do GitHub Actions. Logo, não é necessário rodar os seguintes comandos manualmente. O objetivo deste guia é mostrar como se roda o repositório em um computador pessoal (não no servidor da produção).
