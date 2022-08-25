@@ -39,10 +39,53 @@ k3d cluster create mycluster --servers 1 --agents 1 -p "30000:30000@loadbalancer
 # substitua "type: LoadBalancer" por "type: NodePort"
 
 # rodar
-kubectl apply -f deployment.yaml
+kubectl apply -f deployment.yaml --kubeconfig=/my/path/to/kube_config.yaml
 
 # conferir até estar rodando (dica: usar watch)
-kubectl get all
+kubectl get all --kubeconfig=/my/path/to/kube_config.yaml
 
 # acessar localhost:30000 pelo browser
 ```
+
+
+#### Como criar certificado tls
+Mais detalhes em: https://kubernetes.github.io/ingress-nginx/user-guide/tls/
+
+```
+# substitua a string "134.209.128.120.nip.io" pelo domínio da aplicação e "kubenews-ca" por um nome adequado para a aplicação
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout kubenews-ca.key -out kubenews-ca.crt -subj "/CN=134.209.128.120.nip.io/O=134.209.128.120.nip.io"
+```
+
+#### Como subir certificado tls para o cluster k8s
+
+```
+# substitua a string "kubenews-ca" por um nome adequado para a aplicação
+kubectl create secret tls kubenews-ca-tls --key kubenews-ca.key --cert kubenews-ca.crt --kubeconfig=/my/path/to/kube_config.yaml
+```
+
+#### Como rodar o cluster issuer
+
+```
+# ir para a pasta inicial deste repositório
+cd kube-news
+
+# rodar
+kubectl apply -f k8s/clusterissuer.yaml --kubeconfig=/my/path/to/kube_config.yaml
+```
+
+
+
+#### Como instalar e rodar o ingress controller da nginx no cluster (sem helm)
+Mais detalhes em: https://kubernetes.github.io/ingress-nginx/deploy/
+
+```
+# instalar (lembrar de talvez atualizar a versão do nginx ingress controller, a versão usada neste comando é a v1.3.0)
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.0/deploy/static/provider/cloud/deploy.yaml --kubeconfig=/my/path/to/kube_config.yaml
+
+# ir para a pasta inicial deste repositório
+cd kube-news
+
+# rodar
+kubectl apply -f k8s/ingress.yaml --kubeconfig=/my/path/to/kube_config.yaml
+```
+
